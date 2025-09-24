@@ -1,3 +1,5 @@
+import streamlit as st
+
 # =====================================
 # 🤖 Chatbot AI Sinh học Tổng Hợp (THPT + Nâng cao)
 # =====================================
@@ -107,35 +109,31 @@ sinhhoc = {
 }
 
 
-# === CHATBOT CHẠY CHÍNH ===
-print("🤖 Xin chào! Tôi là AI Sinh học tổng hợp (cấp 3 + nâng cao). Gõ 'thoat' để dừng.")
+# === CHATBOT CHẠY TRÊN STREAMLIT ===
+st.title("🤖 AI Sinh học tổng hợp (cấp 3 + nâng cao)")
+cauhoi = st.text_input("Bạn hãy nhập câu hỏi về Sinh học (hoặc gõ 'thoat' để thoát):")
 
-while True:
-    cauhoi = input("Bạn: ").lower()
-
-    if cauhoi == "thoat":
-        print("AI: Hẹn gặp lại nhé!")
-        break
-
-    found = False
-
-    # Duyệt qua các nhóm lớn
-    for nhom, chitiet in sinhhoc.items():
-        if isinstance(chitiet, dict):
-            for key, value in chitiet.items():
-                if isinstance(value, dict):
-                    for subkey, subval in value.items():
-                        if subkey in cauhoi or key in cauhoi or nhom in cauhoi:
-                            print(f"AI ({subkey}):", subval)
+if st.button("Hỏi"):
+    if cauhoi.lower() == "thoat":
+        st.write("AI: Hẹn gặp lại nhé!")
+    else:
+        found = False
+        for nhom, chitiet in sinhhoc.items():
+            if isinstance(chitiet, dict):
+                for key, value in chitiet.items():
+                    if isinstance(value, dict):
+                        for subkey, subval in value.items():
+                            if subkey in cauhoi.lower() or key in cauhoi.lower() or nhom in cauhoi.lower():
+                                st.write(f"**AI ({subkey})**: {subval}")
+                                found = True
+                    else:
+                        if key in cauhoi.lower() or nhom in cauhoi.lower():
+                            st.write(f"**AI ({key})**: {value}")
                             found = True
-                else:
-                    if key in cauhoi or nhom in cauhoi:
-                        print(f"AI ({key}):", value)
-                        found = True
-        else:
-            if nhom in cauhoi:
-                print(f"AI ({nhom}):", chitiet)
-                found = True
+            else:
+                if nhom in cauhoi.lower():
+                    st.write(f"**AI ({nhom})**: {chitiet}")
+                    found = True
 
-    if not found:
-        print("AI: Xin lỗi, tôi chưa có kiến thức về điều này.")
+        if not found:
+            st.write("AI: Xin lỗi, tôi chưa có kiến thức về điều này.")
